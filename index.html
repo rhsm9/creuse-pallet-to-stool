@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Pallet-to-Stool Upcycling Game</title>
+<style>
+:root{--bg:#fff7e6;--card:#fff;--ink:#3b2a1a;--mut:#7a6650;--acc:#e8590c;--ok:#2f9e44;--bar:#f4c27a;--trk:#f1e3c8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1e1710;--card:#2b2118;--ink:#f6e9d7;--mut:#c2ab8f;--bar:#c98a3d;--trk:#3d2f21}}
+:root[data-theme="dark"]{--bg:#1e1710;--card:#2b2118;--ink:#f6e9d7;--mut:#c2ab8f;--bar:#c98a3d;--trk:#3d2f21}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Poppins",system-ui,sans-serif}
+#app{max-width:520px;margin:0 auto;padding:14px}
+h1{font-size:25px;margin:6px 0}h2{font-size:20px;margin:0 0 4px}h3{margin:18px 0 8px}
+p{margin:0;line-height:1.4;color:var(--mut);font-size:16px}
+.card{background:var(--card);border-radius:16px;padding:12px 14px;margin:10px 0}
+svg{width:100%;display:block;border-radius:16px;margin:8px 0}
+#sc *{transition:transform .15s,opacity .15s}
+.top{display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.dots{display:flex;gap:5px}.dots u{width:14px;height:14px;border-radius:50%;background:var(--trk)}
+.dots u.d{background:var(--ok)}.dots u.c{background:var(--acc)}
+.bar,.tr{background:var(--trk);border-radius:99px;height:14px;overflow:hidden}
+.bar i,.tr i{display:block;height:100%;background:var(--acc);width:0;border-radius:99px;transition:width .12s}
+.cnt{text-align:center;font-weight:700;margin:6px 0 10px}
+.big{width:100%;font:inherit;font-size:26px;font-weight:700;padding:16px;border:0;border-radius:20px;background:var(--acc);color:#fff;box-shadow:0 6px 0 #9c3d06;touch-action:manipulation;user-select:none;cursor:pointer}
+.big:active{transform:translateY(5px);box-shadow:0 1px 0 #9c3d06}
+.big.ok{background:var(--ok);box-shadow:0 6px 0 #1f6d2f}
+input{width:100%;font:inherit;font-size:20px;padding:12px;margin:14px 0;border-radius:14px;border:2px solid var(--bar);background:var(--card);color:var(--ink)}
+.row{display:grid;grid-template-columns:110px 1fr 60px;gap:8px;align-items:center;margin:6px 0;font-size:15px}
+.row b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.row span{text-align:right;font-weight:700}
+.row .tr i{background:var(--bar)}.row.me .tr i{background:var(--ok)}.row.me b{color:var(--ok)}
+@keyframes swing{0%{transform:rotate(0)}40%{transform:rotate(-40deg)}70%{transform:rotate(14deg)}100%{transform:rotate(0)}}
+@keyframes slide{0%{transform:translateX(0)}50%{transform:translateX(-40px)}100%{transform:translateX(0)}}
+@keyframes hop{0%{transform:translateY(0)}40%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+.sw.a{animation:swing .28s ease-out}.sl.a{animation:slide .28s ease-out}.hp.a{animation:hop .3s ease-out}
+.tw{animation:hop 1s infinite}
+</style></head>
+<body><div id="app"></div>
+<script>
+const N=20,$=id=>document.getElementById(id);
+const W='#c8925a';
+const S=[
+{n:"Dismantle the pallet",t:"PRY! 🔧",e:"Old pallets carry heavy boxes. We use a crowbar as a lever to pry the boards apart, so the wood can be used again!",
+ svg:`<rect x="40" y="132" width="220" height="10" fill="#b07a45"/><rect x="40" y="112" width="20" height="20" fill="#9a6634"/><rect x="140" y="112" width="20" height="20" fill="#9a6634"/><rect x="240" y="112" width="20" height="20" fill="#9a6634"/><rect x="40" y="102" width="220" height="10" fill="${W}"/><rect x="40" y="92" width="220" height="10" rx="2" fill="#dba36a" style="transform:rotate(calc(var(--p)*-22deg));transform-origin:40px 102px"/><g class="tool sw" style="transform-origin:262px 112px"><path d="M226 50L262 106Q268 114 258 112" stroke="#555" stroke-width="6" fill="none" stroke-linecap="round"/></g>`},
+{n:"Pull out the nails",t:"PULL! 🔨",e:"Old nails are rusty and sharp. We pull them out with the claw of a hammer so nobody gets scratched and our tools stay safe.",
+ svg:[80,150,220].map(x=>`<g style="transform:translateY(calc(var(--p)*-34px))"><rect x="${x-2}" y="106" width="4" height="24" fill="#a0522d"/><rect x="${x-7}" y="102" width="14" height="5" fill="#8b4513"/></g>`).join('')+`<rect x="40" y="112" width="220" height="16" fill="${W}"/><text class="tool sw" x="140" y="96" font-size="44" style="transform-origin:160px 96px">🔨</text>`},
+{n:"Heat treatment (ISPM 15)",t:"HEAT! 🔥",e:"Wood can hide tiny bugs. We heat it to 56°C for 30 minutes to cook them. ISPM 15 is the world rule that says the wood is bug-free and safe!",
+ svg:`<rect x="120" y="40" width="160" height="110" rx="12" fill="#8a8f98"/><rect x="130" y="72" width="140" height="66" rx="8" fill="#ff7a1a" style="opacity:calc(.35 + var(--p)*.65)"/><line x1="0" y1="114" x2="270" y2="114" stroke="#555" stroke-width="4"/><rect x="10" y="102" width="110" height="12" rx="2" fill="${W}" style="transform:translateX(calc(var(--p)*130px))"/><text x="200" y="62" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" style="opacity:var(--p)">ISPM 15 ✔</text><text x="55" y="70" text-anchor="middle" font-size="16" font-weight="700" fill="#3b2a1a">🌡️ 56°C</text><text class="tool hp" x="185" y="34" font-size="30" style="transform-origin:200px 30px">🔥</text>`},
+{n:"Plane the wood (S2S)",t:"PLANE! 🪵",e:"A planer shaves the top and bottom of each board until it is smooth and the same thickness. S2S means 'Surfaced on 2 Sides'.",
+ svg:`<rect x="40" y="112" width="220" height="20" rx="3" fill="#b98550"/><rect x="40" y="112" width="220" height="6" fill="#e8c08f" style="transform:scaleX(var(--p));transform-origin:40px 112px"/><g style="opacity:var(--p)" fill="none" stroke="#e8c08f" stroke-width="3"><circle cx="232" cy="106" r="5"/><circle cx="246" cy="98" r="5"/><circle cx="258" cy="107" r="5"/></g><g class="tool sl"><rect x="150" y="92" width="70" height="20" rx="4" fill="#3b82c4"/><rect x="168" y="78" width="16" height="14" rx="3" fill="#1e5a99"/></g>`},
+{n:"Cut to size",t:"CUT! 🪚",e:"We saw the wood into the pieces our stool needs: one seat and four legs. Measure twice, cut once!",
+ svg:`<rect x="40" y="112" width="110" height="20" fill="${W}"/><rect x="150" y="112" width="110" height="20" fill="${W}" style="transform:translateX(calc(var(--p)*28px))"/><line x1="150" y1="104" x2="150" y2="140" stroke="#d33" stroke-width="2" stroke-dasharray="4 3"/><text class="tool sl" x="118" y="108" font-size="54">🪚</text>`},
+{n:"Sand it smooth",t:"SAND! ✨",e:"Sandpaper rubs off rough bits and splinters. Now the wood feels soft and safe for fingers, knees and bottoms!",
+ svg:`<rect x="40" y="112" width="220" height="18" rx="3" fill="#d09a62"/><path d="M60 110l6-8M95 110l4-9M130 110l7-7M170 110l3-9M205 110l6-8M240 110l4-8" stroke="#5b3a1a" stroke-width="2" style="opacity:calc(1 - var(--p))"/><g class="tool sl"><rect x="150" y="92" width="64" height="20" rx="5" fill="#e07b39"/><rect x="150" y="108" width="64" height="4" fill="#f2c14e"/></g>`},
+{n:"Assemble it",t:"HAMMER! 🔨",e:"Time to build! The stool already has a seat and 3 legs. Now we hammer nails through the seat to attach the 4th leg. Bang, bang, bang!",
+ svg:`<g style="transform:translateY(calc(var(--p)*54px))"><rect x="232" y="50" width="4" height="24" fill="#777"/></g><rect x="68" y="114" width="16" height="36" fill="#b98550"/><g fill="#a06f40"><rect x="104" y="114" width="16" height="36"/><rect x="196" y="114" width="16" height="36"/></g><rect x="226" y="114" width="16" height="36" fill="#dba36a"/><rect x="60" y="100" width="190" height="14" rx="3" fill="#c8925a"/><g style="transform:translateY(calc(var(--p)*54px))"><rect x="227" y="46" width="14" height="5" fill="#555"/></g><text class="tool sw" x="238" y="50" font-size="46" style="transform-origin:275px 55px">🔨</text>`},
+{n:"Oil finish",t:"OIL! 🖌️",e:"Wood oil soaks in, hydrating the wood and preventing cracks. Once dried, your stool is finally done!",
+ svg:`<g fill="#c8925a"><rect x="68" y="114" width="16" height="36"/><rect x="226" y="114" width="16" height="36"/></g><g fill="#b98550"><rect x="104" y="114" width="16" height="36"/><rect x="196" y="114" width="16" height="36"/></g><rect x="60" y="100" width="190" height="14" rx="3" fill="#d9a86e"/><g style="opacity:var(--p)"><g fill="#9a5a26"><rect x="68" y="114" width="16" height="36"/><rect x="226" y="114" width="16" height="36"/></g><g fill="#7a4a1e"><rect x="104" y="114" width="16" height="36"/><rect x="196" y="114" width="16" height="36"/></g></g><rect x="60" y="100" width="190" height="14" rx="3" fill="#9a5a26" style="transform:scaleX(var(--p));transform-origin:60px 107px"/><rect x="70" y="103" width="110" height="3" rx="1.5" fill="#fff" style="opacity:calc(var(--p)*.5)"/><text class="tool sl" x="150" y="98" font-size="44">🖌️</text>`}
+];
+let st={i:0,taps:0,t0:0,times:[],name:'',done:false,lock:0,scr:'start'},tmr,lb=[];
+try{lb=JSON.parse(localStorage.getItem('pallet-lb')||'[]')}catch(e){}
+const fm=t=>t.toFixed(2)+'s',sum=()=>st.times.reduce((a,b)=>a+b,0);
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function board(id){
+  const a=[...lb].sort((x,y)=>x.t-y.t).slice(0,8);if(!a.length)return'';
+  const mx=a[a.length-1].t;
+  return'<h3>🏆 Leaderboard (fastest wins)</h3>'+a.map((r,k)=>`<div class="row${r.id===id?' me':''}"><b>${['🥇','🥈','🥉'][k]||(k+1)+'.'} ${esc(r.n)}</b><div class="tr"><i style="width:${Math.max(12,r.t/mx*100)}%"></i></div><span>${fm(r.t)}</span></div>`).join('');
+}
+function start(){
+  st.scr='start';clearInterval(tmr);
+  app.innerHTML=`<h1>🪑 Pallet-to-Stool!</h1><p>Turn an old wooden pallet into a brand new stool. That's <b>upcycling</b>! Tap the big button ${N} times on every step, as fast as you can.</p><input id="nm" maxlength="12" placeholder="Your name" value="${esc(st.name)}"><button class="big" id="go">START ▶</button>${board()}`;
+  $('go').onclick=()=>{st.name=$('nm').value.trim()||'Maker';st.i=0;st.times=[];step()};
+}
+function step(){
+  clearInterval(tmr);st.scr='step';st.taps=0;st.done=false;const s=S[st.i];
+  app.innerHTML=`<div class="top"><div class="dots">${S.map((_,k)=>`<u class="${k<st.i?'d':k==st.i?'c':''}"></u>`).join('')}</div><span id="tm">⏱ ${fm(sum())}</span></div><div class="card"><h2>${st.i+1}. ${s.n}</h2><p>${s.e}</p></div><svg id="sc" viewBox="0 0 300 180" style="--p:0"><rect width="300" height="180" fill="#dff1ff"/><rect y="150" width="300" height="30" fill="#a6d38a"/>${s.svg}</svg><div class="bar"><i id="pg"></i></div><div class="cnt" id="ct">Timer starts on your first tap!</div><button class="big" id="btn">${s.t}</button>`;
+}
+function anim(){document.querySelectorAll('#sc .tool').forEach(e=>{e.classList.remove('a');void e.getBoundingClientRect();e.classList.add('a')})}
+function tap(){
+  if(st.scr!=='step')return;const n=performance.now();
+  if(st.done){if(n<st.lock)return;if(st.i<S.length-1){st.i++;step()}else end();return}
+  if(!st.taps){st.t0=n;tmr=setInterval(()=>{$('tm').textContent='⏱ '+fm(sum()+(performance.now()-st.t0)/1000)},50)}
+  st.taps++;const p=st.taps/N;
+  $('sc').style.setProperty('--p',p);$('pg').style.width=p*100+'%';$('ct').textContent=st.taps+' / '+N;anim();
+  if(st.taps>=N){
+    clearInterval(tmr);const t=(n-st.t0)/1000;st.times.push(t);st.done=true;st.lock=n+600;
+    $('tm').textContent='⏱ '+fm(sum());$('ct').textContent='✅ Step done in '+fm(t)+'!';
+    $('btn').textContent=st.i<S.length-1?'NEXT STEP ▶':'FINISH 🏁';$('btn').classList.add('ok');
+  }
+}
+function end(){
+  st.scr='end';const t=sum(),id=Date.now();lb.push({n:st.name,t,id});lb=lb.sort((a,b)=>a.t-b.t).slice(0,50);
+  try{localStorage.setItem('pallet-lb',JSON.stringify(lb))}catch(e){}
+  app.innerHTML=`<h1>🎉 Your stool is ready!</h1><svg viewBox="0 0 300 180"><rect width="300" height="180" fill="#dff1ff"/><rect y="150" width="300" height="30" fill="#a6d38a"/><rect x="110" y="96" width="14" height="46" fill="#7a4a1e"/><rect x="176" y="96" width="14" height="46" fill="#7a4a1e"/><rect x="92" y="96" width="16" height="54" fill="#9a5a26"/><rect x="192" y="96" width="16" height="54" fill="#9a5a26"/><rect x="76" y="78" width="148" height="18" rx="4" fill="#b06a2c"/><rect x="86" y="82" width="90" height="3" rx="1.5" fill="#fff" opacity=".4"/><text class="tw" x="50" y="60" font-size="30">✨</text><text class="tw" x="225" y="50" font-size="30" style="animation-delay:.4s">✨</text></svg><div class="card"><h2>${esc(st.name)}: ${fm(t)}</h2><p>You turned a throwaway pallet into a useful stool using 8 steps. Less waste, more fun. That's upcycling!</p></div>${board(id)}<div style="height:14px"></div><button class="big" id="again">PLAY AGAIN ↻</button>`;
+  $('again').onclick=start;
+}
+document.addEventListener('pointerdown',e=>{if(e.target.closest('#btn')){e.preventDefault();tap()}});
+document.addEventListener('keydown',e=>{if(st.scr==='step'&&(e.code==='Space'||e.code==='Enter')&&!e.repeat){e.preventDefault();tap()}});
+const app=$('app');start();
+</script></body></html>
